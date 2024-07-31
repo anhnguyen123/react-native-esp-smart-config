@@ -99,7 +99,8 @@ public class EspSmartconfigModule extends ReactContextBaseJavaModule {
     String ssid = options.getString("ssid");
     String bssid = options.getString("bssid");
     String pass = options.getString("password");
-    String resultCount = "5";
+   
+    String resultCount = options.hasKey("resultCount") ? options.getString("resultCount") : "1";
 
     Log.d(NAME, "ssid: " + ssid + ", bssid: " + bssid + ", pass: " + pass);
 
