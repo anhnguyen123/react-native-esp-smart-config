@@ -21,6 +21,7 @@ interface IStartProps {
   bssid: string;
   ssid: string;
   password: string;
+  resultCount: string;
 }
 
 export interface SmartConfigResponse {
