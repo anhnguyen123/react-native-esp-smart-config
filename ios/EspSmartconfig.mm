@@ -29,7 +29,9 @@ RCT_EXPORT_METHOD(start:(NSDictionary *)options
     NSString *apSsid = [options valueForKey:@"ssid"];
     NSString *apBssid = [options valueForKey:@"bssid"];
     NSString *apPwd = [options valueForKey:@"password"];
-    int taskCount = 1;
+    int resultCount = [[options valueForKey:@"resultCount"] intValue] ?: 1;
+  
+    
     BOOL broadcast = YES;
     
     dispatch_queue_t  queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
