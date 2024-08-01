@@ -29,7 +29,7 @@ RCT_EXPORT_METHOD(start:(NSDictionary *)options
     NSString *apSsid = [options valueForKey:@"ssid"];
     NSString *apBssid = [options valueForKey:@"bssid"];
     NSString *apPwd = [options valueForKey:@"password"];
-    int resultCount = [[options valueForKey:@"resultCount"] intValue] ?: 1;
+    int taskCount = [[options valueForKey:@"resultCount"] intValue] ?: 1;
   
     
     BOOL broadcast = YES;
