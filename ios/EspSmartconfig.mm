@@ -7,7 +7,7 @@ RCT_EXPORT_MODULE()
 {
     if (self = [super init]) {
         self._esptouchDelegate = [[EspTouchDelegateImpl alloc]init];
-        
+
         if (@available(iOS 13, *)) {
             self._locationManagerDelegate = [[LocationManagerDelegateImpl alloc]init];
             self.locationManager = [[CLLocationManager alloc] init];
@@ -30,33 +30,35 @@ RCT_EXPORT_METHOD(start:(NSDictionary *)options
     NSString *apBssid = [options valueForKey:@"bssid"];
     NSString *apPwd = [options valueForKey:@"password"];
     int taskCount = [[options valueForKey:@"resultCount"] intValue] ?: 1;
-  
-    
+
+
     BOOL broadcast = YES;
-    
+    // Thiết lập số lượng kết quả mong muốn
+    [self._esptouchTask setExpectTaskResultCount:taskCount];
+
     dispatch_queue_t  queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
         NSLog(@"ESPViewController do the execute work...");
-        
+
         NSArray *esptouchResultArray = [self executeForResultsWithSsid:apSsid bssid:apBssid password:apPwd taskCount:taskCount broadcast:broadcast];
-        
+
         dispatch_async(dispatch_get_main_queue(), ^{
-            
+
             BOOL resolved = false;
             NSMutableArray *ret = [[NSMutableArray alloc]init];
-            
+
             for (int i = 0; i < [esptouchResultArray count]; ++i)
             {
                 ESPTouchResult *resultInArray = [esptouchResultArray objectAtIndex:i];
-                
+
                 if (![resultInArray isCancelled] && [resultInArray bssid] != nil) {
-                    
+
                     unsigned char *ipBytes = (unsigned char *)[[resultInArray ipAddrData] bytes];
-                    
+
                     NSString *ipv4String = [NSString stringWithFormat:@"%d.%d.%d.%d", ipBytes[0], ipBytes[1], ipBytes [2], ipBytes [3]];
-                    
+
                     NSDictionary *respData = @{@"bssid": [resultInArray bssid], @"ipv4": ipv4String};
-                    
+
                     [ret addObject: respData];
                     resolved = true;
                     if (![resultInArray isSuc])
@@ -67,7 +69,7 @@ RCT_EXPORT_METHOD(start:(NSDictionary *)options
                 resolve(ret);
             else
                 reject(RCTErrorUnspecified, nil, RCTErrorWithMessage(@"Timoutout or not Found"));
-            
+
         });
     });
 }
@@ -77,7 +79,7 @@ RCT_EXPORT_METHOD(getWifiInfo:(RCTPromiseResolveBlock)resolve
 {
     if (![self getUserLocationAuth]) {
         [self.locationManager requestWhenInUseAuthorization];
-        
+
         [[NSNotificationCenter defaultCenter] addObserverForName:@"RNWIFI:authorizationStatus" object:nil queue:nil usingBlock:^(NSNotification *note)
         {
             if ([self getUserLocationAuth]){
@@ -115,7 +117,7 @@ RCT_EXPORT_METHOD(getWifiInfo:(RCTPromiseResolveBlock)resolve
         case kCLAuthorizationStatusAuthorizedWhenInUse:
             result = YES;
             break;
-            
+
         default:
             break;
     }
@@ -145,13 +147,13 @@ RCT_EXPORT_METHOD(getWifiInfo:(RCTPromiseResolveBlock)resolve
             }
         }
 //    }
-    
+
     NSString *ip = [self getIPAddress];
     bool isConnected = [ip length] > 0;
     NSString *conn = isConnected ? @"true" : @"false";
     NSString *iswifi = isConnected ? @"true" : @"false";
     NSString *type = isConnected ? @"wifi" : @"none";
-    
+
     return @{@"bssid": bssid, @"ssid": ssid, @"ipv4": ip, @"isConnected": conn, @"isWifi": iswifi, @"frequency": @"null", @"type": type};
 }
 
@@ -174,7 +176,7 @@ RCT_EXPORT_METHOD(getWifiInfo:(RCTPromiseResolveBlock)resolve
 {
     [self cancel];
     [self._condition lock];
-    
+
     RCTLogInfo(@"ssid %@ bssid %@ pass %@", apSsid, apBssid, apPwd);
 
     self._esptouchTask = [[ESPTouchTask alloc]initWithApSsid:apSsid andApBssid:apBssid andApPwd:apPwd];
@@ -219,8 +221,8 @@ RCT_EXPORT_METHOD(getWifiInfo:(RCTPromiseResolveBlock)resolve
 
 }
 
-+ (BOOL) requiresMainQueueSetup { 
-    return YES; 
++ (BOOL) requiresMainQueueSetup {
+    return YES;
 }
 
 @end

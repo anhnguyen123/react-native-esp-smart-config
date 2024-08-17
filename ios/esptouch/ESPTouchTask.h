@@ -120,4 +120,6 @@
  * @param broadcast YES is boradcast, NO is multicast
  */
 - (void) setPackageBroadcast: (BOOL) broadcast;
+// ngọc anh thêm vào
+- (void)setExpectTaskResultCount:(int)count;
 @end
