@@ -99,7 +99,7 @@ public class EspSmartconfigModule extends ReactContextBaseJavaModule {
     String ssid = options.getString("ssid");
     String bssid = options.getString("bssid");
     String pass = options.getString("password");
-   
+
     String resultCount = options.hasKey("resultCount") ? options.getString("resultCount") : "1";
 
     Log.d(NAME, "ssid: " + ssid + ", bssid: " + bssid + ", pass: " + pass);
@@ -170,6 +170,7 @@ public class EspSmartconfigModule extends ReactContextBaseJavaModule {
         taskResultCount = Integer.parseInt(taskResultCountStr);
 
         esptouchTask = new EsptouchTask(apSsid, apBssid, apPassword, getCurrentActivity());
+        esptouchTask.setExpectTaskResultCount(taskResultCount); // Truyền số lượng kết quả mong muốn
       }
       return esptouchTask.executeForResults(taskResultCount);
     }

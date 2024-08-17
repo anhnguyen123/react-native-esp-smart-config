@@ -27,6 +27,8 @@ public class EsptouchTask implements IEsptouchTask {
         this(apSsid, apBssid, apPassword, null, context);
     }
 
+
+
     /**
      * Constructor of EsptouchTask
      *
@@ -76,6 +78,7 @@ public class EsptouchTask implements IEsptouchTask {
 
     private void init(Context context, TouchData ssid, TouchData bssid, TouchData password, ITouchEncryptor encryptor) {
         _mParameter = new EsptouchTaskParameter();
+//        _mParameter.setExpectTaskResultCount(5);
         _mEsptouchTask = new __EsptouchTask(context, ssid, bssid, password, encryptor, _mParameter);
     }
 
@@ -111,5 +114,11 @@ public class EsptouchTask implements IEsptouchTask {
     @Override
     public void setPackageBroadcast(boolean broadcast) {
         _mParameter.setBroadcast(broadcast);
+    }
+    @Override
+    public void setExpectTaskResultCount(int expectTaskResultCount) {
+      if (_mParameter != null) {
+        _mParameter.setExpectTaskResultCount(expectTaskResultCount);
+      }
     }
 }

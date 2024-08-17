@@ -60,4 +60,6 @@ public interface IEsptouchTask {
      * @param broadcast true is broadcast, false is multicast
      */
     void setPackageBroadcast(boolean broadcast);
+
+    void setExpectTaskResultCount(int taskResultCount);
 }
